@@ -7,9 +7,20 @@ import (
 	"strconv"
 )
 
+func calculateFuelRec(agg, mass int) int {
+	fuelReq := mass/3 - 2
+	if fuelReq < 0 {
+		fuelReq = 0
+	}
+	if mass == 0 {
+		return agg + fuelReq
+	}
+	return calculateFuelRec(agg+fuelReq, fuelReq)
+}
+
 // CalculateFuel computes fuel required per module
 func CalculateFuel(mass int) int {
-	return mass/3 - 2
+	return calculateFuelRec(0, mass)
 }
 
 //SumFuelRequirement reads in module weights
