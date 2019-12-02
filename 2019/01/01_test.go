@@ -21,4 +21,16 @@ func TestFuel(t *testing.T) {
 		want := 2
 		assertCorrectMessage(t, got, want)
 	})
+
+	t.Run("Tests fuel formula with 1969", func(t *testing.T) {
+		got := CalculateFuel(1969)
+		want := 966
+		assertCorrectMessage(t, got, want)
+	})
+
+	t.Run("Tests fuel formula with 100756", func(t *testing.T) {
+		got := CalculateFuel(100756)
+		want := 50346
+		assertCorrectMessage(t, got, want)
+	})
 }
