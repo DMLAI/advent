@@ -7,20 +7,6 @@ import (
 	"strconv"
 )
 
-func applyOpcode(opcode int, instructions []int) int {
-	switch opcode {
-	case 1:
-		fmt.Println("add")
-	case 2:
-		fmt.Println("multiply")
-	case 99:
-		return instructions[0]
-	default:
-		panic("Unknown opcode")
-	}
-	return 42
-}
-
 func readInstructions(filename string) []int {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -62,11 +48,27 @@ func readInstructions(filename string) []int {
 }
 
 // RunInstructions executes Intcode
-func RunInstructions(instructions []int) int {
-	return 42
+func RunInstructions(intcode []int) int {
+	for i := 0; i < len(intcode); i += 4 {
+		opcode := intcode[i]
+		switch opcode {
+		case 1:
+			intcode[intcode[i+3]] = intcode[intcode[i+1]] + intcode[intcode[i+2]]
+		case 2:
+			intcode[intcode[i+3]] = intcode[intcode[i+1]] * intcode[intcode[i+2]]
+		case 99:
+			return intcode[0]
+		default:
+			fmt.Println(intcode[i])
+			panic("Unknown opcode")
+		}
+	}
+	return intcode[0]
 }
 
 func main() {
 	instructions := readInstructions("input.txt")
+	instructions[1] = 12
+	instructions[2] = 2
 	fmt.Println(RunInstructions(instructions))
 }
