@@ -40,6 +40,8 @@ func SumFuelRequirement(filename string) int {
 		total += CalculateFuel(int(weight))
 	}
 
+	file.Close()
+
 	return total
 }
 
