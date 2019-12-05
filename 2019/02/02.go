@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -48,7 +49,7 @@ func readInstructions(filename string) []int {
 }
 
 // RunInstructions executes Intcode
-func RunInstructions(intcode []int) int {
+func RunInstructions(intcode []int) (int, error) {
 	for i := 0; i < len(intcode); i += 4 {
 		opcode := intcode[i]
 		switch opcode {
@@ -57,18 +58,51 @@ func RunInstructions(intcode []int) int {
 		case 2:
 			intcode[intcode[i+3]] = intcode[intcode[i+1]] * intcode[intcode[i+2]]
 		case 99:
-			return intcode[0]
+			return intcode[0], nil
 		default:
-			fmt.Println(intcode[i])
-			panic("Unknown opcode")
+			return 0, errors.New("Unknown opcode")
 		}
 	}
-	return intcode[0]
+	return 0, errors.New("Out of instructions")
+}
+
+// FindInputs finds two inputs that produce desired output
+func FindInputs(want int, intcode []int) (int, error) {
+	memory := make([]int, len(intcode))
+	for noun := 0; noun < 99; noun++ {
+		for verb := 0; verb < 99; verb++ {
+			copy(memory, intcode)
+			memory[1] = noun
+			memory[2] = verb
+			output, err := RunInstructions(memory)
+			if err != nil {
+				fmt.Println("Could not run instructions")
+				continue
+			}
+			if output == want {
+				return 100*noun + verb, nil
+			}
+		}
+	}
+	return 0, errors.New("Not found")
 }
 
 func main() {
+	// Part 1
 	instructions := readInstructions("input.txt")
 	instructions[1] = 12
 	instructions[2] = 2
-	fmt.Println(RunInstructions(instructions))
+	partOne, err := RunInstructions(instructions)
+	if err != nil {
+		fmt.Println("Could not run instructions")
+	}
+	fmt.Println("Part one:", partOne)
+
+	// Part 2
+	instructions = readInstructions("input.txt")
+	partTwo, err := FindInputs(19690720, instructions)
+	if err != nil {
+		fmt.Println("Could not find appropriate noun / verb")
+	}
+	fmt.Println("Part two:", partTwo)
 }

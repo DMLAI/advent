@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestRunInstructions(t *testing.T) {
 	assertCorrectMessage := func(t *testing.T, got, want int) {
@@ -12,21 +15,30 @@ func TestRunInstructions(t *testing.T) {
 
 	t.Run("First element changes", func(t *testing.T) {
 		instructions := []int{1, 0, 0, 0, 99}
-		got := RunInstructions(instructions)
+		got, err := RunInstructions(instructions)
+		if err != nil {
+			fmt.Println("Could not execute instructions")
+		}
 		want := 2
 		assertCorrectMessage(t, got, want)
 	})
 
 	t.Run("No changes", func(t *testing.T) {
 		instructions := []int{2, 3, 0, 3, 99}
-		got := RunInstructions(instructions)
+		got, err := RunInstructions(instructions)
+		if err != nil {
+			fmt.Println("Could not execute instructions")
+		}
 		want := 2
 		assertCorrectMessage(t, got, want)
 	})
 
 	t.Run("Longer Intcode", func(t *testing.T) {
 		instructions := []int{1, 1, 1, 4, 99, 5, 6, 0, 99}
-		got := RunInstructions(instructions)
+		got, err := RunInstructions(instructions)
+		if err != nil {
+			fmt.Println("Could not execute instructions")
+		}
 		want := 30
 		assertCorrectMessage(t, got, want)
 	})
